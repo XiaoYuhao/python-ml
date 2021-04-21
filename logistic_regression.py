@@ -3,8 +3,8 @@ import numpy as np
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 
-#data = datasets.load_breast_cancer()
-data = datasets.load_iris()
+data = datasets.load_breast_cancer()
+#data = datasets.load_iris()
 
 
 X = np.array(data["data"])
@@ -67,35 +67,29 @@ class MultiLogisticRegression:
         self.itera = itera
         pass
 
+    def _sigmoid(self, z):
+        return 1 / (1 + np.exp(-z))
+
     def fit(self, x_train, y_train):
-        classes = np.unique(y_train)
+        self.classes = np.unique(y_train)
         self.K = classes.shape[0]
         self.W = list()
 
-        main_c = classes[self.K - 1]
-        for i in range(self.K - 1):
-            cur_c = classes[i]
-            _x = X_train[np.append(np.where(y_train==main_c)[0],np.where(y_train==cur_c)[0])]
-            _y = np.append(np.zeros_like(np.where(y_train==main_c)[0]), np.ones_like(np.where(y_train==cur_c)[0]))
+        for i in range(self.K):
+            cur_c = self.classes[i]
+            _y = np.zeros_like(y_train)
+            _y[np.where(y_train==cur_c)[0]] = 1
             lr = LogisticRegression(lr=self.lr, itera=self.itera)
-            lr.fit(_x, _y)
-            print("=========================>")
+            lr.fit(x_train, _y)
             self.W.append(lr.W)
         
     def pred(self, point):
-        exp_sum = 0
-        self.exp = list()
-        for i in range(self.K - 1):
-            self.exp.append(np.exp(-np.dot(np.concatenate((point, np.ones(1))), self.W[i])))
-            exp_sum += np.exp(-np.dot(np.concatenate((point, np.ones(1))), self.W[i]))
-        max_p = 1 / (1 + exp_sum)
-        res = self.K - 1
-        for i in range(self.K - 1):
-            p = self.exp[i] / (1 + exp_sum)
+        max_p = 0
+        for i in range(self.K):
+            p = self._sigmoid(np.dot(np.concatenate((point, np.ones(1))), self.W[i]))
             if p > max_p:
                 max_p = p
-                res = i
-        print(max_p, res, end=' ')
+                res = self.classes[i]
         return res
     
     def eval(self, x_test, y_test):
@@ -105,28 +99,23 @@ class MultiLogisticRegression:
             if self.pred(_x) == _y:
                 acc += 1
             num += 1
-            print(_y)
         acc /= num
         print(f"Accuray: {acc} \t")
 
 
 if __name__ == '__main__':
-    #_x = X_train[np.append(np.where(Y_train==2)[0],np.where(Y_train==0)[0])]
-    #_y = np.append(np.zeros_like(np.where(Y_train==2)[0]), np.ones_like(np.where(Y_train==0)[0]))
-    '''
-    _x = data.data[:, :2]
-    _y = (data.target != 0) * 1
-
-    _x_train, _x_test, _y_train, _y_test = train_test_split(_x, _y)
-    lr = LogisticRegression(lr=0.0005, itera=100000)
-    lr.fit(_x_train, _y_train)
-    lr.eval(_x_test, _y_test)
-    '''
     
-    lr = MultiLogisticRegression(lr=0.0005, itera=100000)
+    lr = LogisticRegression(lr=0.00003, itera=400000)
     lr.fit(X_train, Y_train)
     lr.eval(X_test, Y_test)
     
+    
+    '''
+    lr = MultiLogisticRegression(lr=0.0005, itera=100000)
+    lr.fit(X_train, Y_train)
+    lr.eval(X_train, Y_train)
+    lr.eval(X_test, Y_test)
+    '''
     
 
     

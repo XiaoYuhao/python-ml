@@ -13,7 +13,7 @@ classes = data['target_names']
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y)
 
 class Perceptron:
-    def __init__(self, lr=1, itera=1000):
+    def __init__(self, lr=0.1, itera=1000):
         self.lr = lr
         self.itera = itera
         pass
@@ -73,6 +73,6 @@ class Perceptron:
 if __name__ == '__main__':
     _x = np.array([(3,3),(4,3),(1,1)])
     _y = np.array([1,1,-1])
-    classifier = Perceptron()
+    classifier = Perceptron(lr=0.001, itera=10000)
     classifier.fit(X_train, Y_train)
     classifier.eval(X_test, Y_test)

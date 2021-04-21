@@ -9,15 +9,15 @@ X = np.array(data["data"])
 Y = np.array(data['target'])
 classes = data["target_names"]
 
-#X_train, X_test, Y_train, Y_test = train_test_split(X, Y)
-
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y)
+'''
 ratio = 0.8
 train_len = int(X.shape[0] * ratio)
 X_train = X[:train_len]
 Y_train = Y[:train_len]
 X_test = X[train_len:]
 Y_test = Y[train_len:]
-
+'''
 #X_train = np.array([(1,'S'), (1,'M'), (1,'M'), (1,'S'), (1,'S'), (2,'S'), (2,'M'), (2,'M'), (2,'L'), (2,'L'), (3,'L'), (3,'M'), (3,'M'), (3,'L'), (3,'L')])
 #Y_train = np.array([-1, -1, 1, 1, -1, -1, -1, 1, 1, 1, 1, 1, 1, 1, -1])
 
