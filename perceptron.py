@@ -13,9 +13,9 @@ classes = data['target_names']
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y)
 
 class Perceptron:
-    def __init__(self, lr=1, iter=1000):
+    def __init__(self, lr=1, itera=1000):
         self.lr = lr
-        self.iter = 100
+        self.itera = itera
         pass
 
     def _sgd(self):
@@ -42,8 +42,8 @@ class Perceptron:
             if self._sgd() is False:
                 break
             it += 1
-            if it >= self.iter:
-                print("Warn: Iter maybe too small.")
+            if it >= self.itera:
+                print("Warn: Iterations maybe too small.")
                 break
 
         print(self.W)
