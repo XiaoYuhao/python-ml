@@ -1,24 +1,28 @@
 
 import numpy as np
+import random
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
+data = datasets.load_wine()
 
-data = datasets.load_iris()
 
+data = np.load("iris_data.npy", allow_pickle=True)
+data = data[()]
 
 X = np.array(data["data"])
 Y = np.array(data['target'])
 classes = data["target_names"]
 
-X_train, X_test, Y_train, Y_test = train_test_split(X, Y)
-'''
-ratio = 0.8
-train_len = int(X.shape[0] * ratio)
-X_train = X[:train_len]
-Y_train = Y[:train_len]
-X_test = X[train_len:]
-Y_test = Y[train_len:]
-'''
+def train_test_split(X, Y, ratio=0.8):
+    select = [i for i in range(X.shape[0])]
+    random.shuffle(select)
+    train_len = int(X.shape[0] * ratio)
+    X_train = X[select[:train_len]]
+    X_test = X[select[train_len:]]
+    Y_train = Y[select[:train_len]]
+    Y_test = Y[select[train_len:]]
+    return X_train, Y_train, X_test, Y_test
+
 
 def euclidean_distance(a, b):
     '''
@@ -65,9 +69,10 @@ class KNearestNeighbours:
             if p == _y:
                 acc += 1
             num += 1
-            print(_x, _y, p)
+            #print(_x, _y, p)
         acc /= num
-        print(f"Accuary: {acc}")
+        #print(f"Accuary: {acc}")
+        return acc
 
     def _classifier_base(self, train_data, train_target, point, k=5):
         '''
@@ -172,7 +177,7 @@ class KNearestNeighbours:
 
         return _closepoinst
 
-    def _classifier_kd_tree(self, point, k=5):
+    def _classifier_kd_tree(self, point, k=10):
         closepoint = self._search_k(self.kd_root, self.dim, 0, point, self.k, None)
         #print(closepoint)
         votes = [int(p[2]) for p in closepoint]
@@ -196,12 +201,28 @@ if __name__ == '__main__':
     #val = search(node, 2, 0, np.array([2,5]))
     val = search_k(node, 2, 0, np.array([2,5]), 3, None)
     print(val)
-
-    '''
+    
     knn = KNearestNeighbours(ctype='kd_tree', k=5)
     knn.fit(X_train, Y_train)
     #test_point = np.array([4.4, 3.1, 1.3, 1.4])
     #print(classes[knn.pred(test_point)])
     knn.eval(X_test, Y_test)
+    '''
+    test_k = [1,3,5,10]
+    acc_k = [[] for i in range(len(test_k))]
+    for i in range(5):
+        X_train, Y_train, X_test, Y_test = train_test_split(X, Y)
+        for j, k in enumerate(test_k):
+            knn = KNearestNeighbours(ctype='kd_tree', k=k)
+            knn.fit(X_train, Y_train)
+            acc = knn.eval(X_test, Y_test)
+            acc_k[j].append(acc)
+    
+    for j, k in enumerate(test_k):
+        print(f"K = {k}")
+        print(acc_k[j])
+        acc_avg = sum(acc_k[j]) / len(acc_k[j])
+        print(f"avg acc = {acc_avg}")
+
     
     
