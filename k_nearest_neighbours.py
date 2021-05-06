@@ -1,10 +1,6 @@
 
 import numpy as np
 import random
-from sklearn import datasets
-from sklearn.model_selection import train_test_split
-data = datasets.load_wine()
-
 
 data = np.load("iris_data.npy", allow_pickle=True)
 data = data[()]
