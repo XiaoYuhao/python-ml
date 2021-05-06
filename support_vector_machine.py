@@ -15,7 +15,7 @@ classes = data["target_names"]
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y)
 
 class SupportVectorMachine:
-    def __init__(self, itera=100, C=0.4):
+    def __init__(self, itera=50, C=0.8):
         self.itera = itera
         self.C = C
         pass
@@ -67,7 +67,7 @@ class SupportVectorMachine:
                     H = min(self.C, a_j_old + a_i_old)
                 a_j_new = self._clip(a_j_new, L, H)
                 a_i_new = a_i_old + y_i * y_j * (a_j_old - a_j_new)
-                if abs(a_j_new - a_j_old) < 0.00001:
+                if abs(a_j_new - a_j_old) < 0.0000001:
                     continue
                 self.alphas[i] = a_i_new
                 self.alphas[j] = a_j_new
