@@ -25,7 +25,9 @@ def euclidean_distance(a, b):
     求两个样本点之间的欧式距离
     np.linalg.norm函数用于求范数，默认求二次范数
     '''
-    return np.linalg.norm(np.array(a) - np.array(b))
+    #return np.linalg.norm(np.array(a) - np.array(b), ord=2)
+    return np.linalg.norm(np.array(a) - np.array(b), ord=1)
+
 
 #kd_tree
 
